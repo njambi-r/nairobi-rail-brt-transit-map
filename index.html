@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./css/tubeMap.css" />
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="../js/d3-nairobi-map.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Hammersmith+One"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <title>Nairobi NCR and BRT Map</title>
+
+    <!--original font: 'Hammersmith One', sans-serif; -->
+    <style>
+      html, body {
+        height: 100%;
+      }
+    
+      body {
+        font-family: 'Rubik', sans-serif; 
+        margin: 0;
+        padding: 0;
+      }
+    
+      #tube-map {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+      }
+    
+      #tube-map svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    
+      #download-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+
+      #download-png-button {
+        right: 20px;
+      }
+
+      #download-svg-button {
+        right: 150px;
+      }      
+    
+      #download-button:hover {
+        background-color: #45a049;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <!-- ✅ Button is completely outside D3 container and fixed -->
+    <button id="download-svg-button" class="download-button" onclick="downloadSVG()">Download SVG</button>
+    <button id="download-png-button" class="download-button">Download High-Res PNG</button>
+
+
+    <!-- original-- <div id="tube-map"></div> -->
+    <div id="capture-area">
+      <div id="map-wrapper" style="position: relative;">
+        <div id="tube-map"></div>
+      
+        <div id="legend" class="legend-container" style="position: absolute; top: 10px; right: 100px;">
+          <h3>Legend</h3>
+          <ul id="legend-list"></ul>
+        </div>
+        <div class="footer footer-container main-footer">
+          <div id="footer-center">
+            <a>Nairobi Integrated Transport System</a>
+          </div>
+        </div>
+      </div>
+    </div>   
+    
+    <div class="footer footer-container main-footer">
+      <div id="footer-center">
+        <a>Nairobi Integrated Transport System</a>
+      </div>
+    </div>
+
+    <script>
+      var container = d3.select("#tube-map");
+      var width = 1600;
+      var height = 1000;
+
+      var map = d3
+        .tubeMap()
+        .width(width)
+        .height(height)
+        .margin({
+          top: 20,
+          right: 20,
+          bottom: 40,
+          left: 100,
+        })
+        .on("click", function (name) {
+          console.log(name);
+        });
+
+      d3.json("json/NCR+BRT_v1.json").then(function (data) {
+        container.datum(data).call(map);
+
+        var svg = container.select("svg");
+
+        zoom = d3.zoom().scaleExtent([0.5, 6]).on("zoom", zoomed);
+
+        var zoomContainer = svg.call(zoom);
+        /*
+        var initialScale = 2;
+        var initialTranslate = [100, 200];
+
+        zoom.scaleTo(zoomContainer, initialScale);
+        zoom.translateTo(
+          zoomContainer,
+          initialTranslate[0],
+          initialTranslate[1]
+        );
+        */
+
+        d3.json("json/NCR+BRT_v1.json").then(function (data) {
+          container.datum(data).call(map);
+
+          var svg = container.select("svg");
+          zoom = d3.zoom().scaleExtent([0.5, 6]).on("zoom", zoomed);
+
+          var zoomContainer = svg.call(zoom);
+
+          const g = svg.select("g");
+          const bbox = g.node().getBBox();
+
+          const padding = 10; // ← You can adjust this as needed
+
+          const paddedX = bbox.x - padding;
+          const paddedY = bbox.y - padding;
+          const paddedWidth = bbox.width + 2 * padding;
+          const paddedHeight = bbox.height + 2 * padding;
+
+          // Insert border rect behind all content
+          g.insert("rect", ":first-child")
+            .attr("x", paddedX)
+            .attr("y", paddedY)
+            .attr("width", paddedWidth)
+            .attr("height", paddedHeight)
+            .attr("fill", "none")
+            .attr("stroke", "#ccc")
+            .attr("stroke-width", 1)
+            .attr("pointer-events", "none");
+
+          const containerWidth = width;
+          const containerHeight = height;
+
+          const scale = Math.min(
+            containerWidth / paddedWidth,
+            containerHeight / paddedHeight
+          );
+
+          const translateX = (containerWidth - paddedWidth * scale) / 2 - paddedX * scale;
+          const translateY = (containerHeight - paddedHeight * scale) / 2 - paddedY * scale;
+
+          svg.call(
+            zoom.transform,
+            d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+          );
+
+          function zoomed(event) {
+            g.attr("transform", event.transform.toString());
+          }
+        });
+
+
+
+        function zoomed(event) {
+          svg.select("g").attr("transform", event.transform.toString());
+        }
+      });
+    </script>
+
+    <!-- ✅ Add the download logic here -->
+    <script>
+      function downloadSVG() {
+        const svg = document.querySelector('#tube-map svg');
+        if (!svg) {
+          alert("⚠️ SVG not found. Make sure the map is rendered.");
+          return;
+        }
+
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = "tube_map.svg";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        URL.revokeObjectURL(url);
+      }
+
+      /* 
+      ----- original without the legend download logic
+      function downloadPNG() {
+        const svg = document.querySelector('#tube-map svg');
+        if (!svg) {
+          alert("⚠️ SVG not found. Make sure the map is rendered.");
+          return;
+        }      
+
+        //svg.querySelectorAll("text").forEach(t => t.setAttribute("font-weight", "bold")); //bold the downloaded png
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgSize = svg.getBoundingClientRect();
+        const scaleFactor = 4; // Adjust this number for higher/lower resolution
+
+        const canvas = document.createElement('canvas');
+        canvas.width = svgSize.width * scaleFactor;
+        canvas.height = svgSize.height * scaleFactor;
+        const ctx = canvas.getContext('2d');
+
+        // ⚡️ Optional: Fill white background
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const img = new Image();
+        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        img.onload = function () {
+          ctx.setTransform(scaleFactor, 0, 0, scaleFactor, 0, 0);
+          ctx.drawImage(img, 0, 0);
+          URL.revokeObjectURL(url);
+
+          const pngUrl = canvas.toDataURL("image/png");
+          const downloadLink = document.createElement("a");
+          downloadLink.href = pngUrl;
+          downloadLink.download = "tube_map.png";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        };
+
+        img.src = url;
+      }*/
+
+      //Adding logic to also include legend in the download
+      function downloadPNG() {
+        const container = document.querySelector('#capture-area');
+        if (!container) {
+          alert("⚠️ Capture area not found.");
+          return;
+        }
+
+        html2canvas(container, {
+          backgroundColor: 'white',
+          scale: 6  // Higher = higher resolution
+        }).then(canvas => {
+          const pngUrl = canvas.toDataURL("image/png");
+          const downloadLink = document.createElement("a");
+          downloadLink.href = pngUrl;
+          downloadLink.download = "tube_map_with_legend.png";
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+        });
+      }
+
+      // ✅ Add this below the function
+      document.getElementById("download-png-button").addEventListener("click", () => {
+        document.fonts.ready.then(() => {
+          downloadPNG();
+        });
+      });
+    </script>
+
+    <script>
+      fetch('json/NCR+BRT_v1.json')
+        .then(response => response.json())
+        .then(data => {
+          const lines = data.lines;
+          const addedLines = new Set();
+          const legendList = document.getElementById('legend-list');
+          // Interchange marker
+          const interchange = document.createElement("li");
+          interchange.innerHTML = `
+            <div class="legend-color-box" style="border: 2px solid black; height: 5px; width: 5px; border-radius: 50%; background-color: transparent;"></div>
+            Interchange Station
+          `;
+          legendList.appendChild(interchange);
+
+          lines.forEach(line => {
+            if (!addedLines.has(line.name)) {
+              const isRail = line.mode === 'rail';
+
+              const li = document.createElement('li');
+              li.style.display = 'flex';
+              li.style.alignItems = 'center';
+              li.style.gap = '8px';
+
+              // Create the base SVG line
+              const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+              svg.setAttribute("width", "40");
+              svg.setAttribute("height", "8");
+
+              // Solid colored base line
+              const baseLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+              baseLine.setAttribute("x1", "0");
+              baseLine.setAttribute("y1", "4");
+              baseLine.setAttribute("x2", "40");
+              baseLine.setAttribute("y2", "4");
+              baseLine.setAttribute("stroke", line.color);
+              baseLine.setAttribute("stroke-width", "4");
+              svg.appendChild(baseLine);
+
+              // Optional white dashes on top
+              if (isRail) {
+                const dashLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                dashLine.setAttribute("x1", "0");
+                dashLine.setAttribute("y1", "4");
+                dashLine.setAttribute("x2", "40");
+                dashLine.setAttribute("y2", "4");
+                dashLine.setAttribute("stroke", "white");
+                dashLine.setAttribute("stroke-width", "2");
+                dashLine.setAttribute("stroke-dasharray", "6,4");
+                svg.appendChild(dashLine);
+              }
+
+              const label = document.createElement("span");
+              label.textContent = line.name;
+
+              li.appendChild(svg);
+              li.appendChild(label);
+
+              legendList.appendChild(li);
+              addedLines.add(line.name);
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
