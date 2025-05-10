@@ -644,7 +644,7 @@
             ],
             "labelPos": "W",
             "canonical": false,
-            "shiftCoords": [-1.5, 0],
+            "shiftCoords": [-1.8, 0],
             "labelShiftCoords": [0, 0]
           },
           {
@@ -818,7 +818,7 @@
             "labelPos": "SW",
             "canonical": false,
             "hide": false,
-            "shiftCoords":[-1,3]
+            "shiftCoords":[-1.2,3.2]
 
           },
           {
@@ -859,7 +859,7 @@
             "labelPos": "SE",
             "canonical": false,
             "hide": false,
-            "shiftCoords":[-2,2]
+            "shiftCoords":[-2.1,2.1]
           },
           {
 
@@ -1117,7 +1117,7 @@
             ],
             "labelPos": "SW",
             "canonical": false,
-            "shiftCoords": [0.8,-1.7]
+            "shiftCoords": [1,-3.3]
           },
           {
 
@@ -1461,7 +1461,8 @@
               22,
               164
             ],
-            "labelPos": "S"
+            "labelPos": "S",
+            "shiftCoords":[1.3,1.17]
           },
           {
 
@@ -1963,7 +1964,9 @@
               344,
               336
             ],
-            "labelPos": "S"
+            "labelPos": "S",
+            "shiftCoords": [0.5, 2],
+            "labelShiftCoords": [1, 2]
           },
           {
             "name": "Thika \nSouth",
@@ -2279,7 +2282,7 @@
             ],
             "labelPos": "NW",
             "canonical": true,
-            "shiftCoords": [0,-1],
+            "shiftCoords": [0,-2.4],
             "labelShiftCoords": [0, -1],
             "hide": false
           }
