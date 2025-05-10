@@ -1,0 +1,19 @@
+# Use LF for all text files
+* text=auto eol=lf
+
+# Force LF for specific file types
+*.ipynb text eol=lf
+*.js     text eol=lf
+*.html   text eol=lf
+*.css    text eol=lf
+*.json   text eol=lf
+*.py     text eol=lf
+*.csv    text eol=lf
+
+# Binary files - don't transform
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
