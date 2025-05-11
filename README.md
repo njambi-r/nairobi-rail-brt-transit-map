@@ -11,6 +11,7 @@ Demo:  https://nairobi-rail-brt-transit-map.netlify.app/
 ### Inspo
 + [Berlin U-Bahn Map](https://github.com/skamsie/berlin-ubahn-map)
 + [Lisbon Schematic Metro Map](https://github.com/Joao-Pedrosa/GSDB)
++ [Stuttgart Light Rail Network Maps](https://github.com/ad-freiburg/loom)
 
 ### Project Structure
 ```
