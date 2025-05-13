@@ -89,3 +89,4 @@ Update the `.json` data file manually if needed for fine-tuned control e.g., pos
 - Auto-generate JSON from spatial (e.g., shapefile or GeoJSON) data
 - Add interactivity to the map e.g., bringing up station info when clicked
 - Add route finder
+- Ingest GTFS data
