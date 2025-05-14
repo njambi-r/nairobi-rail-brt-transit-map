@@ -85,7 +85,7 @@ Edit `d3-nairobi-map.js` to tweak map behavior or add interactivity (e.g., toolt
 
 Update the `.json` data file manually if needed for fine-tuned control e.g., positioning of labels, offsetting, etc.
 
-## ✅ To-do / Ideas for extension
+## ✅ To-do / Potential improvements
 - Auto-generate JSON from spatial (e.g., shapefile or GeoJSON) data
 - Add interactivity to the map e.g., bringing up station info when clicked
 - Add route finder
