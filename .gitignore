@@ -16,6 +16,7 @@ dist/
 *.tmp
 *.bak
 *.swp
+*~
 
 # IDE/editor-specific
 .vscode/
@@ -32,3 +33,6 @@ Thumbs.db
 
 # Node.js (if repo includes frontend code)
 node_modules/
+
+# ignore any files ending in “.o” or “.a” — object and archive files that may be the product of building your code
+*.[oa]
