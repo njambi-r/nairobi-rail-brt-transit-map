@@ -39,7 +39,7 @@ Get the data related to the stations and lines you want to represent. This inclu
 
 ### 2. Create schematic layout
 Quantum GIS (QGIS) software was used to create the schematic layout. The procedure outlined in the instruction guide [found here](https://dent.org.uk/materials-for-recreating-tube-map/) was loosely followed.
-- The station and line data showing the real locations and links was loaded into QGIS. UTM
+- The station and line data showing the real locations and links was loaded into QGIS.
 - A 1000m square grid was generated. Stations and lines were relocated to grid locations such that a route had only two types of corners: a 90 degree turn and a 45 degree turn.
 - The result was a schematic map showing the modified locations and links.
 - Tip: Organize stations along the same line in one layer to make it easier to define their order along the line.
