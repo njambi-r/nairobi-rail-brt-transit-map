@@ -79,7 +79,7 @@ Ensure all file paths are correctly referenced:
 No server or build tools are required.
 
 ### 6. Customize
-Modify `style.css` to adjust layout, fonts, or legend styles.
+Modify `tubeMap.css` to adjust layout, fonts, or legend styles.
 
 Edit `d3-nairobi-map.js` to tweak map behavior or add interactivity (e.g., tooltips, highlighting).
 
